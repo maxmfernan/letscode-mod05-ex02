@@ -1,14 +1,19 @@
 package br.com.letscode.rest;
 
+import br.com.letscode.dto.ClientDto;
 import br.com.letscode.model.Client;
 import br.com.letscode.service.ClientService;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("client")
+@ApplicationScoped
 public class ClientResource {
 
     @Inject
@@ -16,29 +21,29 @@ public class ClientResource {
 
     @GET
     @Path("/list")
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Client> getAllClients(){
+    public List<ClientDto> getAllClients(){
         return clientService.getAllClients();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public ClientDto createClient(@Valid ClientDto clientDto){
+        return clientService.createClient(clientDto);
     }
 
     @PUT
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void updateClientById(final @PathParam("id") Long id, Client client){
-        clientService.updateClientById(id, client);
-    }
-
-    @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Client createClient(Client client){
-        return clientService.createClient(client);
+    public ClientDto updateClient(@PathParam("id") Long id, @Valid ClientDto clientDto){
+        return clientService.updateClient(id, clientDto);
     }
 
     @DELETE
     @Path("/{id}")
-    public void deleteClientById(final @PathParam("id") int id){
-
+    public Response deleteClient(@PathParam("id") Long id){
+        return clientService.deleteClient(id);
     }
+
 }
